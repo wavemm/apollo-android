@@ -13,6 +13,8 @@ import com.nytimes.android.external.cache.CacheBuilder;
 import com.nytimes.android.external.cache.Weigher;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
@@ -133,5 +135,15 @@ public final class LruNormalizedCache extends NormalizedCache {
 
   void clearCurrentCache() {
     lruCache.invalidateAll();
+  }
+
+
+  @Override public Map<Class, Map<String, Record>> dump() {
+    Map<Class, Map<String, Record>> dump = new LinkedHashMap<>();
+    dump.put(this.getClass(), Collections.unmodifiableMap(new LinkedHashMap<>(lruCache.asMap())));
+    if (nextCache().isPresent()) {
+      dump.putAll(nextCache().get().dump());
+    }
+    return dump;
   }
 }

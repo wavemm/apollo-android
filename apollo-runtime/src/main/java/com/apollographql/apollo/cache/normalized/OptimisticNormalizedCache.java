@@ -10,6 +10,7 @@ import com.nytimes.android.external.cache.CacheBuilder;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Map;
@@ -126,6 +127,20 @@ public final class OptimisticNormalizedCache extends NormalizedCache {
     }
     lruCache.invalidateAll(removedKeys);
     return changedCacheKeys;
+  }
+
+  @Override public Map<Class, Map<String, Record>> dump() {
+    Map<String, Record> records = new LinkedHashMap<>();
+    for (Map.Entry<String, RecordJournal> entry : lruCache.asMap().entrySet()) {
+      records.put(entry.getKey(), entry.getValue().snapshot);
+    }
+
+    Map<Class, Map<String, Record>> dump = new LinkedHashMap<>();
+    dump.put(this.getClass(), Collections.unmodifiableMap(records));
+    if (nextCache().isPresent()) {
+      dump.putAll(nextCache().get().dump());
+    }
+    return dump;
   }
 
   private final class RecordJournal {

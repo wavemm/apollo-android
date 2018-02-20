@@ -1,9 +1,7 @@
 package com.apollographql.apollo.cache.normalized;
 
 import com.apollographql.apollo.api.ResponseField;
-import com.apollographql.apollo.api.Mutation;
 import com.apollographql.apollo.api.Operation;
-import com.apollographql.apollo.api.Query;
 
 import java.util.Map;
 
